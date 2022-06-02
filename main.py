@@ -10,4 +10,8 @@ def index():
 def shipments():
 	return render_template('shipments.html', page_title="Dukes Shipments")
 
+@app.route('/new-product')
+def newProduct():
+	return render_template('newproduct.html', page_title="New Product")
+
 app.run(host='0.0.0.0', port=81)
