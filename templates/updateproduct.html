@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+	<h1 class="py-2">{{page_function}}</h1>
+	<form class="py-2 productForm">
+		<div class="container">
+			 <div class="row">
+		    <div class="col">
+		      <div class="mb-3">
+    <label for="productTitle" class="form-label">Product Title</label>
+    <input type="text" class="form-control" id="productTitle">
+					</div>
+  <div class="mb-3">
+    <label for="productMedia" class="form-label">Media</label>
+    <input type="file" class="form-control" id="productMedia">
+  </div>
+		    </div>
+		    <div class="col">
+		      <div class="mb-3">
+    <label for="productQuantity" class="form-label">Product Quantity</label>
+    <input type="number" class="form-control" id="productQuantity">
+					</div>
+  <div class="mb-3">
+    <label for="productSKU" class="form-label">SKU</label>
+    <input type="text" class="form-control" id="productSKU">
+  </div>
+		    </div>
+		  </div>
+			<div class="row">
+		    <div class="col">
+		      <div class="mb-3">
+    <label for="productDescription" class="form-label">Product description</label>
+    <textarea rows="4" cols="50" class="form-control" id="productDescription"></textarea>
+					</div>
+		    </div>
+		  </div>
+		</div>
+</form>
+	<a href ="/"><button type="button" class="btn btn-warning">Update</button>
+	<a href ="/"><button type="button" class="btn btn-danger">Back</button>
+	</a>
+</div>
+{% endblock %}

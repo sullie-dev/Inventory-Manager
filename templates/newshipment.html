@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+	<h1 class="py-2">{{page_function}}</h1>
+	<form class="py-2 productForm">
+		<div class="container">
+			 <div class="row">
+		    <div class="col">
+		      <div class="mb-3">
+    <label for="shipmentTitle" class="form-label">Shipment Number</label>
+    <input type="text" class="form-control" id="shipmentTitle">
+					</div>
+  <div class="mb-3">
+    <label for="shipmentTracking" class="form-label">Tracking number</label>
+    <input type="number" class="form-control" id="shipmentTracking">
+  </div>
+		    </div>
+		    <div class="col">
+		      <div class="mb-3">
+    <label for="shippingETA" class="form-label">Estimate arrival date</label>
+    <input type="date" class="form-control" id="productQuantity">
+					</div>
+  <div class="mb-3">
+    <label for="shippingDelivered" class="form-label">Delivered</label>
+    <input type="checkbox" class="form-check-input" id="shippingDelivered">
+  </div>
+		    </div>
+		  </div>
+			<div class="row">
+		    <div class="col">
+		      <div class="mb-3">
+    <label for="shipmentDescription" class="form-label">Shipment Description</label>
+    <textarea rows="4" cols="50" class="form-control" id="productDescription"></textarea>
+					</div>
+		    </div>
+		  </div>
+		</div>
+</form>
+	<a href ="/"><button type="button" class="btn btn-danger">Back</button>
+	</a>
+</div>
+{% endblock %}
