@@ -1,3 +1,12 @@
 .btnIcon{
 	padding-right: 10px;
 }
+
+/*Product Form*/
+.productForm{
+	border: 1px solid lightgray;
+	border-radius: 10px;
+	padding: 10px;
+	margin-top: 10px;
+	margin-bottom:10px;
+}

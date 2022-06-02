@@ -12,6 +12,6 @@ def shipments():
 
 @app.route('/new-product')
 def newProduct():
-	return render_template('newproduct.html', page_title="New Product")
+	return render_template('newproduct.html', page_title="New Product", page_function="Add product")
 
 app.run(host='0.0.0.0', port=81)
