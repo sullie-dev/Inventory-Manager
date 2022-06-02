@@ -24,4 +24,8 @@ def updateProduct():
 def newShipment():
 	return render_template('newshipment.html', page_title="New Shipment", page_function="Add shipment")
 
+@app.route('/update-shipment')
+def updateShipment():
+	return render_template('updateshipments.html', page_title="Update Shipment", page_function="Update shipment")
+
 app.run(host='0.0.0.0', port=81)
