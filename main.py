@@ -1,6 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, flash, request
+import os
 
 app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY')
 
 @app.route('/')
 def index():
@@ -18,6 +20,12 @@ def newProduct():
 @app.route('/update-product')
 def updateProduct():
 	return render_template('updateproduct.html', page_title="Update Product", page_function="Update product")
+
+@app.route('/create-product', methods=("GET", "POST"))
+def createProdcut():
+	flash('Product created sucessfully','success')
+	return redirect('/')
+
 
 # Shipments
 @app.route('/new-shipment')

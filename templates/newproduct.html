@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container">
 	<h1 class="py-2">{{page_function}}</h1>
-	<form class="py-2 productForm">
+	<form class="py-2 productForm" method="post"action="/create-product">
 		<div class="container">
 			 <div class="row">
 		    <div class="col">
@@ -35,7 +35,7 @@
 		    </div>
 		  </div>
 		</div>
-		<a href="/new-shipment"><button type="button" class="btn btn-success"><i class="bi bi-plus-square-dotted btnIcon"></i>Add Product</button></a>
+		<button type="submit" class="btn btn-success"><i class="bi bi-plus-square-dotted btnIcon"></i>Add Product</button>
 	<a href ="/"><button type="button" class="btn btn-danger">Back</button>
 	</a>
 </form>
