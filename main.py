@@ -36,4 +36,9 @@ def newShipment():
 def updateShipment():
 	return render_template('updateshipments.html', page_title="Update Shipment", page_function="Update shipment")
 
+@app.route('/create-shipment', methods=("GET", "POST"))
+def createShipment():
+	flash('Shipment created sucessfully','success')
+	return redirect('/')
+
 app.run(host='0.0.0.0', port=81)
