@@ -48,9 +48,49 @@ def shipments():
 def newProduct():
 	return render_template('newproduct.html', page_title="New Product", page_function="Add product")
 
-@app.route('/update-product')
-def updateProduct():
-	return render_template('updateproduct.html', page_title="Update Product", page_function="Update product")
+@app.route('/update-product/<product_key>')
+
+def updateProduct(product_key):
+	connection = connect_db()
+	cursor = connection.cursor()
+	
+	search_query = f"SELECT * from product WHERE product_key='{product_key}'"
+	
+	cursor.execute(search_query)
+	connection.commit()
+	
+	product_result = cursor.fetchall()
+	
+	return render_template('updateproduct.html', page_title="Update Product", page_function="Update product", product = product_result)
+
+@app.route('/update-<product_key_update>', methods=("GET", "POST"))
+
+def updateProductKey(product_key_update):
+	db = connect_db()
+	cursor = db.cursor()
+
+	product_name = request.form.get('productTitle')
+	product_qquantity = request.form.get('productQuantity')
+	product_sku = request.form.get('productSKU')
+	product_image = request.form.get('productMedia')
+	product_description = request.form.get('productDescription')
+
+	update_product_name_query = """UPDATE product SET product_name = %s WHERE product_key = %s"""
+	update_product_qquantity_query = """UPDATE product SET product_qquantity = %s WHERE product_key = %s"""
+	update_product_sku_query = """UPDATE product SET product_sku = %s WHERE product_key = %s"""
+	update_product_image_query = """UPDATE product SET product_image = %s WHERE product_key = %s"""
+	update_product_description_query = """UPDATE product SET product_description = %s WHERE product_key = %s"""
+	
+	cursor.execute(update_product_name_query, (product_name, product_key_update))
+	cursor.execute(update_product_qquantity_query, (product_qquantity, product_key_update))
+	cursor.execute(update_product_sku_query, (product_sku, product_key_update))
+	cursor.execute(update_product_image_query, (product_image, product_key_update))
+	cursor.execute(update_product_description_query, (product_description, product_key_update))
+	
+	db.commit()
+	
+	flash('Product updated sucessfully','success')
+	return redirect('/')
 
 @app.route('/create-product', methods=("GET", "POST"))
 def createProdcut():
