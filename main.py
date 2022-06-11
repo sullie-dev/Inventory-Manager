@@ -4,8 +4,6 @@ import psycopg2
 import random
 import string
 
-
-
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 
@@ -39,17 +37,19 @@ def index():
 	product_result = cursor.fetchall()
 	return render_template('index.html',page_title="Dukes Inventory", products = product_result)
 
+
 @app.route('/shipments')
 def shipments():
 	return render_template('shipments.html', page_title="Dukes Shipments")
 
 # Products
+	
 @app.route('/new-product')
 def newProduct():
 	return render_template('newproduct.html', page_title="New Product", page_function="Add product")
 
-@app.route('/update-product/<product_key>')
 
+@app.route('/update-product/<product_key>')
 def updateProduct(product_key):
 	connection = connect_db()
 	cursor = connection.cursor()
@@ -63,8 +63,8 @@ def updateProduct(product_key):
 	
 	return render_template('updateproduct.html', page_title="Update Product", page_function="Update product", product = product_result)
 
-@app.route('/update-<product_key_update>', methods=("GET", "POST"))
 
+@app.route('/update-<product_key_update>', methods=("GET", "POST"))
 def updateProductKey(product_key_update):
 	db = connect_db()
 	cursor = db.cursor()
@@ -92,6 +92,8 @@ def updateProductKey(product_key_update):
 	flash('Product updated sucessfully','success')
 	return redirect('/')
 
+
+
 @app.route('/create-product', methods=("GET", "POST"))
 def createProdcut():
 	db = connect_db()
@@ -114,7 +116,22 @@ def createProdcut():
 	return redirect('/')
 
 
+@app.route('/delete-<product_key>', methods=("GET", "POST"))
+def delete(product_key):
+	
+		connection = connect_db()
+		cursor = connection.cursor()
+		# delete_query = """DELETE product
+  #   WHERE product_key = %s"""
+		delete_query = f""" DELETE from product WHERE product_key='{product_key}'"""
+		cursor.execute(delete_query)
+	
+		connection.commit()
+
+		flash('Product created deleted','success')
+		return redirect('/')
 # Shipments
+		
 @app.route('/new-shipment')
 def newShipment():
 	return render_template('newshipment.html', page_title="New Shipment", page_function="Add shipment")
