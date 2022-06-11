@@ -2,27 +2,27 @@
 {% block content %}
 <div class="container">
 	<h1 class="py-2">{{page_function}}</h1>
-	<form class="py-2 productForm">
+	<form class="py-2 productForm" method="post"action="/create-shipment">
 		<div class="container">
 			 <div class="row">
 		    <div class="col">
 		      <div class="mb-3">
-    <label for="shipmentTitle" class="form-label">Shipment Number</label>
-    <input type="text" class="form-control" id="shipmentTitle">
+    <label for="shipmentTitle" class="form-label">Shipment name</label>
+    <input type="text" class="form-control" id="shipmentTitle" name="shipmentTitle">
 					</div>
   <div class="mb-3">
     <label for="shipmentTracking" class="form-label">Tracking number</label>
-    <input type="number" class="form-control" id="shipmentTracking">
+    <input type="text" class="form-control" id="shipmentTracking" name="shipmentTracking">
   </div>
 		    </div>
 		    <div class="col">
 		      <div class="mb-3">
-    <label for="shippingETA" class="form-label">Estimate arrival date</label>
-    <input type="date" class="form-control" id="productQuantity">
+    <label for="shipmentDeliveryDate" class="form-label">Estimate arrival date</label>
+    <input type="date" class="form-control" id="shipmentDeliveryDate" name="shipmentDeliveryDate">
 					</div>
   <div class="mb-3">
-    <label for="shippingDelivered" class="form-label">Delivered</label>
-    <input type="checkbox" class="form-check-input" id="shippingDelivered">
+    <label for="shipmentStatus" class="form-label">Delivered</label>
+    <input type="checkbox" value="FALSE" class="form-check-input" id="shipmentStatus" name="shipmentStatus">
   </div>
 		    </div>
 		  </div>
@@ -30,7 +30,7 @@
 		    <div class="col">
 		      <div class="mb-3">
     <label for="shipmentDescription" class="form-label">Shipment Description</label>
-    <textarea rows="4" cols="50" class="form-control" id="productDescription"></textarea>
+    <textarea rows="4" cols="50" class="form-control" id="shipmentDescription" name="shipmentDescription"></textarea>
 					</div>
 		    </div>
 		  </div>

@@ -40,7 +40,18 @@ def index():
 
 @app.route('/shipments')
 def shipments():
-	return render_template('shipments.html', page_title="Dukes Shipments")
+
+	connection = connect_db()
+	cursor = connection.cursor()
+	
+	search_query = f"SELECT * FROM shipment"
+	
+	cursor.execute(search_query)
+	connection.commit()
+
+	shipments_result = cursor.fetchall()
+	print(shipments_result)
+	return render_template('shipments.html', page_title="Dukes Shipments", shipments=shipments_result)
 
 # Products
 	
@@ -130,19 +141,40 @@ def delete(product_key):
 
 		flash('Product created deleted','success')
 		return redirect('/')
-# Shipments
+
+	# Shipments
 		
 @app.route('/new-shipment')
 def newShipment():
 	return render_template('newshipment.html', page_title="New Shipment", page_function="Add shipment")
 
+@app.route('/create-shipment', methods=("GET", "POST"))
+def createShipment():
+		db = connect_db()
+		cursor = db.cursor()
+	
+		shipment_key = keyGenerator(),
+		shipment_name = request.form.get('shipmentTitle'),
+		shipment_tracking = request.form.get('shipmentTracking'),
+		shipment_delivery_date = request.form.get('shipmentDeliveryDate'),
+		shipment_status = bool(request.form.get('shipmentStatus')),
+		shipment_description = request.form.get('shipmentDescription')
+	
+		insert_query = """INSERT INTO shipment (shipment_key, shipment_name,shipment_tracking,shipment_delivery_date, shipment_status, shipment_description) VALUES (%s,%s,%s,%s,%s,%s)"""
+	
+		record_to_insert = (shipment_key, shipment_name,shipment_tracking,shipment_delivery_date, shipment_status, shipment_description)
+		
+		cursor.execute(insert_query, record_to_insert)
+		db.commit()
+	
+		flash('Shipment created sucessfully','success')
+		return redirect('/shipments')
+
+
 @app.route('/update-shipment')
 def updateShipment():
 	return render_template('updateshipments.html', page_title="Update Shipment", page_function="Update shipment")
 
-@app.route('/create-shipment', methods=("GET", "POST"))
-def createShipment():
-	flash('Shipment created sucessfully','success')
-	return redirect('/')
+
 
 app.run(host='0.0.0.0', port=81)

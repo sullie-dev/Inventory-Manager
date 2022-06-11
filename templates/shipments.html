@@ -1,5 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
+{% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+    {% for message in messages %}
+			<div class="alert alert-{{message[0]}} alert-dismissible fade show" role="alert">
+  {{ message[1] }}
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+				    {% endfor %}
+  {% endif %}
+{% endwith %}
 	<div class="p-3">
 		<table class="table">
   <thead>
@@ -12,34 +22,16 @@
     </tr>
   </thead>
   <tbody>
+   {% for shipment in shipments %}
     <tr>
-      <td>Wubba Lubba Dub Dub</td>
-      <td>12345678</td>
-      <td>25th Dec</td>
-			<td>No</td>
-			<td><i class="bi bi-trash3 px-1"></i> <i class="bi bi-pencil px-1"></i><i class="bi bi-box-arrow-up-right px-1"></i></td>
+      <td>{{shipment[1]}}</td>
+      <td>{{shipment[2]}}</td>
+      <td>{{shipment[3]}}</td>
+			<td>{{shipment[4]}}</td>
+			<td><a href="delete-{{ shipment[0] }}"><i class="bi bi-trash3 px-1"></i></a> <a href="update-product/{{ shipment[0] }}"><i class="bi bi-pencil px-1"></i></a></td>
     </tr>
-    <tr>
-      <td>Wubba Lubba Dub Dub</td>
-      <td>12345678</td>
-      <td>25th Dec</td>
-			<td>No</td>
-			<td><i class="bi bi-trash3 px-1"></i> <i class="bi bi-pencil px-1"></i><i class="bi bi-box-arrow-up-right px-1"></i></td>
-    </tr>
-    <tr>
-      <td>Wubba Lubba Dub Dub</td>
-      <td>12345678</td>
-      <td>25th Dec</td>
-			<td>No</td>
-			<td><i class="bi bi-trash3 px-1"></i> <i class="bi bi-pencil px-1"></i><i class="bi bi-box-arrow-up-right px-1"></i></td>
-    </tr>
-		<tr>
-      <td>Wubba Lubba Dub Dub</td>
-      <td>12345678</td>
-      <td>25th Dec</td>
-			<td>No</td>
-			<td><i class="bi bi-trash3 px-1"></i> <i class="bi bi-pencil px-1"></i> <i class="bi bi-box-arrow-up-right px-1"></i></td>
-    </tr>
+        {% endfor %}
+
   </tbody>
 			
 </table>
