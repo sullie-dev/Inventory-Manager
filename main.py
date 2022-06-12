@@ -128,7 +128,7 @@ def createProdcut():
 
 
 @app.route('/delete-<product_key>', methods=("GET", "POST"))
-def delete(product_key):
+def deleteProduct(product_key):
 	
 		connection = connect_db()
 		cursor = connection.cursor()
@@ -175,6 +175,20 @@ def createShipment():
 def updateShipment():
 	return render_template('updateshipments.html', page_title="Update Shipment", page_function="Update shipment")
 
+@app.route('/delete-<shipment_key>', methods=("GET", "POST"))
+def deleteShipment(shipment_key):
+	
+		connection = connect_db()
+		cursor = connection.cursor()
+		# delete_query = """DELETE product
+  #   WHERE product_key = %s"""
+		delete_query = f""" DELETE from shipment WHERE shipment_key='{shipment_key}'"""
+		cursor.execute(delete_query)
+	
+		connection.commit()
+
+		flash('Shipment deleted','success')
+		return redirect('/shipments')
 
 
 app.run(host='0.0.0.0', port=81)
