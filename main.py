@@ -269,5 +269,11 @@ def deleteShipment(shipment_key):
 def warehouse():
     return render_template("warehouse.html", page_title="Dukes Locations", page_function="Locations")
 
+@app.route('/new-location')
+def newLocation():
+    return render_template('newwarehouse.html',
+                           page_title="New Location",
+                           page_function="Add Location")
+
 
 app.run(host='0.0.0.0', port=81)

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+	<h1 class="py-2">{{page_function}}</h1>
+	<form class="py-2 productForm" method="post"action="/create-location">
+		<div class="container">
+			 <div class="row">
+		    <div class="col">
+		      <div class="mb-3">
+    <label for="locationName" class="form-label">Location</label>
+    <input type="text" class="form-control" id="locationName" name="locationName">
+					</div>
+  <div class="mb-3">
+    <label for="locationAddress" class="form-label">Address</label>
+    <input type="text" class="form-control" id="locationAddress" name="locationAddress">
+  </div>
+		    </div>
+		    <div class="col">
+		      <div class="mb-3">
+    <label for="locationContct" class="form-label">Contact number</label>
+    <input type="tel" class="form-control" id="locationContct" name="locationContct">
+					</div>
+		    </div>
+		  </div>
+		</div>
+		<button type="submit" class="btn btn-success"><i class="bi bi-plus-square-dotted btnIcon"></i>Add Location</button>
+	<a href ="/"><button type="button" class="btn btn-danger">Back</button>
+	</a>
+</form>
+	
+</div>
+{% endblock %}
