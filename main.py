@@ -267,13 +267,40 @@ def deleteShipment(shipment_key):
 #Merchant routes
 @app.route('/warehouse')
 def warehouse():
-    return render_template("warehouse.html", page_title="Dukes Locations", page_function="Locations")
+	connection = connect_db()
+	cursor = connection.cursor()
+	
+	search_query = f"SELECT * FROM location"
+	
+	cursor.execute(search_query)
+	connection.commit()
+
+	location_result = cursor.fetchall()
+	return render_template("warehouse.html", page_title="Dukes Locations", page_function="Locations", locations = location_result)
 
 @app.route('/new-location')
 def newLocation():
     return render_template('newwarehouse.html',
                            page_title="New Location",
                            page_function="Add Location")
+@app.route('/create-location', methods=("GET", "POST"))
+def createLocation():
+    db = connect_db()
+    cursor = db.cursor()
+
+    location_key = keyGenerator(),
+    location_name = request.form.get('locationName'),
+    location_address = request.form.get('locationAddress'),
+    location_number = request.form.get('locationContct'),
+
+    insert_query = """INSERT INTO location (location_key, location_name,location_address, location_number) VALUES (%s,%s,%s,%s)"""
+
+    record_to_insert = (location_key, location_name,location_address, location_number)
+    cursor.execute(insert_query, record_to_insert)
+    db.commit()
+
+    flash('Location created sucessfully', 'success')
+    return redirect('/warehouse')
 
 
 app.run(host='0.0.0.0', port=81)
