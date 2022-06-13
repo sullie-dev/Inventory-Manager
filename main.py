@@ -65,9 +65,19 @@ def shipments():
 
 @app.route('/new-product')
 def newProduct():
-    return render_template('newproduct.html',
-                           page_title="New Product",
-                           page_function="Add product")
+
+	connection = connect_db()
+	cursor = connection.cursor()
+	
+	location_query = f"SELECT * FROM location"
+	
+	cursor.execute(location_query)
+	connection.commit()
+
+	locatios_result = cursor.fetchall()
+	
+	return render_template('newproduct.html',
+                           page_title="New Product",page_function="Add product", locations = locatios_result)
 
 
 @app.route('/update-product/<product_key>')
@@ -75,21 +85,27 @@ def updateProduct(product_key):
     connection = connect_db()
     cursor = connection.cursor()
 
-    search_query = f"SELECT * from product WHERE product_key='{product_key}'"
+    product_query = f"SELECT * from product WHERE product_key='{product_key}'"
 
-    cursor.execute(search_query)
+    cursor.execute(product_query)
     connection.commit()
 
     product_result = cursor.fetchall()
 
+    location_query = f"SELECT * from location"
+    cursor.execute(location_query)
+    connection.commit()
+
+    location_result = cursor.fetchall()
+
     return render_template('updateproduct.html',
                            page_title="Update Product",
                            page_function="Update product",
-                           product=product_result)
+                           product=product_result, locations = location_result)
 
 
 @app.route('/update-<product_key_update>', methods=("GET", "POST"))
-def updateProductKey(product_key_update):
+def updateSingleProduct(product_key_update):
     db = connect_db()
     cursor = db.cursor()
 
@@ -98,50 +114,55 @@ def updateProductKey(product_key_update):
     product_sku = request.form.get('productSKU')
     product_image = request.form.get('productMedia')
     product_description = request.form.get('productDescription')
+    product_location = request.form.get('productLocation')
 
     update_product_name_query = """UPDATE product SET product_name = %s WHERE product_key = %s"""
     update_product_qquantity_query = """UPDATE product SET product_qquantity = %s WHERE product_key = %s"""
     update_product_sku_query = """UPDATE product SET product_sku = %s WHERE product_key = %s"""
     update_product_image_query = """UPDATE product SET product_image = %s WHERE product_key = %s"""
     update_product_description_query = """UPDATE product SET product_description = %s WHERE product_key = %s"""
+    update_product_location_query = """UPDATE product SET product_location = %s WHERE product_key = %s"""
 
     cursor.execute(update_product_name_query,
-                   (product_name, product_key_update))
+	                   (product_name, product_key_update))
     cursor.execute(update_product_qquantity_query,
-                   (product_qquantity, product_key_update))
+	                   (product_qquantity, product_key_update))
     cursor.execute(update_product_sku_query, (product_sku, product_key_update))
     cursor.execute(update_product_image_query,
-                   (product_image, product_key_update))
+	                   (product_image, product_key_update))
     cursor.execute(update_product_description_query,
-                   (product_description, product_key_update))
-
+	                   (product_description, product_key_update))
+    cursor.execute(update_product_location_query,
+	                   (product_location, product_key_update))
+	
     db.commit()
-
+	
     flash('Product updated sucessfully', 'success')
     return redirect('/')
 
 
 @app.route('/create-product', methods=("GET", "POST"))
 def createProdcut():
-    db = connect_db()
-    cursor = db.cursor()
+  db = connect_db()
+  cursor = db.cursor()
+	
+  product_key = keyGenerator(),
+  product_name = request.form.get('productTitle'),
+  product_qquantity = request.form.get('productQuantity'),
+  product_sku = request.form.get('productSKU'),
+  product_image = request.form.get('productMedia'),
+  product_description = request.form.get('productDescription'), 
+  product_location = request.form.get('productLocation'),
 
-    product_key = keyGenerator(),
-    product_name = request.form.get('productTitle'),
-    product_qquantity = request.form.get('productQuantity'),
-    product_sku = request.form.get('productSKU'),
-    product_image = request.form.get('productMedia'),
-    product_description = request.form.get('productDescription')
+  insert_query = """INSERT INTO product (product_key, product_name,product_qquantity,product_sku, product_image, product_description, product_location) VALUES (%s,%s,%s,%s,%s,%s,%s)"""
 
-    insert_query = """INSERT INTO product (product_key, product_name,product_qquantity,product_sku, product_image, product_description) VALUES (%s,%s,%s,%s,%s,%s)"""
+  record_to_insert = (product_key, product_name, product_qquantity,
+                        product_sku, product_image, product_description, product_location)
+  cursor.execute(insert_query, record_to_insert)
+  db.commit()
 
-    record_to_insert = (product_key, product_name, product_qquantity,
-                        product_sku, product_image, product_description)
-    cursor.execute(insert_query, record_to_insert)
-    db.commit()
-
-    flash('Product created sucessfully', 'success')
-    return redirect('/')
+  flash('Product created sucessfully', 'success')
+  return redirect('/')
 
 
 @app.route('/delete-<product_key>', methods=("GET", "POST"))
@@ -264,7 +285,7 @@ def deleteShipment(shipment_key):
 
 
 
-#Merchant routes
+#Warehouse routes
 @app.route('/warehouse')
 def warehouse():
 	connection = connect_db()

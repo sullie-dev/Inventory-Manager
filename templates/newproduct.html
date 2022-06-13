@@ -33,6 +33,16 @@
     <textarea rows="4" cols="50" class="form-control" id="productDescription" name="productDescription"></textarea>
 					</div>
 		    </div>
+				<div class="col">
+		      <div class="mb-3">
+    <label for="productLocation" class="form-label">Location</label>
+    <select class="form-select" id="productLocation" name="productLocation">
+			{% for location in locations %}
+			<option value="{{location[1]}}">{{ location[1]}}</option>
+			{% endfor %}
+		</select>
+					</div>
+		    </div>
 		  </div>
 		</div>
 		<button type="submit" class="btn btn-success"><i class="bi bi-plus-square-dotted btnIcon"></i>Add Product</button>
