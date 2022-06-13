@@ -66,18 +66,20 @@ def shipments():
 @app.route('/new-product')
 def newProduct():
 
-	connection = connect_db()
-	cursor = connection.cursor()
-	
-	location_query = f"SELECT * FROM location"
-	
-	cursor.execute(location_query)
-	connection.commit()
+    connection = connect_db()
+    cursor = connection.cursor()
 
-	locatios_result = cursor.fetchall()
-	
-	return render_template('newproduct.html',
-                           page_title="New Product",page_function="Add product", locations = locatios_result)
+    location_query = f"SELECT * FROM location"
+
+    cursor.execute(location_query)
+    connection.commit()
+
+    locatios_result = cursor.fetchall()
+
+    return render_template('newproduct.html',
+                           page_title="New Product",
+                           page_function="Add product",
+                           locations=locatios_result)
 
 
 @app.route('/update-product/<product_key>')
@@ -101,7 +103,8 @@ def updateProduct(product_key):
     return render_template('updateproduct.html',
                            page_title="Update Product",
                            page_function="Update product",
-                           product=product_result, locations = location_result)
+                           product=product_result,
+                           locations=location_result)
 
 
 @app.route('/update-<product_key_update>', methods=("GET", "POST"))
@@ -124,45 +127,46 @@ def updateSingleProduct(product_key_update):
     update_product_location_query = """UPDATE product SET product_location = %s WHERE product_key = %s"""
 
     cursor.execute(update_product_name_query,
-	                   (product_name, product_key_update))
+                   (product_name, product_key_update))
     cursor.execute(update_product_qquantity_query,
-	                   (product_qquantity, product_key_update))
+                   (product_qquantity, product_key_update))
     cursor.execute(update_product_sku_query, (product_sku, product_key_update))
     cursor.execute(update_product_image_query,
-	                   (product_image, product_key_update))
+                   (product_image, product_key_update))
     cursor.execute(update_product_description_query,
-	                   (product_description, product_key_update))
+                   (product_description, product_key_update))
     cursor.execute(update_product_location_query,
-	                   (product_location, product_key_update))
-	
+                   (product_location, product_key_update))
+
     db.commit()
-	
+
     flash('Product updated sucessfully', 'success')
     return redirect('/')
 
 
 @app.route('/create-product', methods=("GET", "POST"))
 def createProdcut():
-  db = connect_db()
-  cursor = db.cursor()
-	
-  product_key = keyGenerator(),
-  product_name = request.form.get('productTitle'),
-  product_qquantity = request.form.get('productQuantity'),
-  product_sku = request.form.get('productSKU'),
-  product_image = request.form.get('productMedia'),
-  product_description = request.form.get('productDescription'), 
-  product_location = request.form.get('productLocation'),
+    db = connect_db()
+    cursor = db.cursor()
 
-  insert_query = """INSERT INTO product (product_key, product_name,product_qquantity,product_sku, product_image, product_description, product_location) VALUES (%s,%s,%s,%s,%s,%s,%s)"""
+    product_key = keyGenerator(),
+    product_name = request.form.get('productTitle'),
+    product_qquantity = request.form.get('productQuantity'),
+    product_sku = request.form.get('productSKU'),
+    product_image = request.form.get('productMedia'),
+    product_description = request.form.get('productDescription'),
+    product_location = request.form.get('productLocation'),
 
-  record_to_insert = (product_key, product_name, product_qquantity,
-                        product_sku, product_image, product_description, product_location)
-  cursor.execute(insert_query, record_to_insert)
-  db.commit()
+    insert_query = """INSERT INTO product (product_key, product_name,product_qquantity,product_sku, product_image, product_description, product_location) VALUES (%s,%s,%s,%s,%s,%s,%s)"""
 
-  flash('Product created sucessfully', 'success')
-  return redirect('/')
+    record_to_insert = (product_key, product_name, product_qquantity,
+                        product_sku, product_image, product_description,
+                        product_location)
+    cursor.execute(insert_query, record_to_insert)
+    db.commit()
+
+    flash('Product created sucessfully', 'success')
+    return redirect('/')
 
 
 @app.route('/delete-<product_key>', methods=("GET", "POST"))
@@ -283,27 +287,31 @@ def deleteShipment(shipment_key):
     return redirect('/shipments')
 
 
-
-
 #Warehouse routes
 @app.route('/warehouse')
 def warehouse():
-	connection = connect_db()
-	cursor = connection.cursor()
-	
-	search_query = f"SELECT * FROM location"
-	
-	cursor.execute(search_query)
-	connection.commit()
+    connection = connect_db()
+    cursor = connection.cursor()
 
-	location_result = cursor.fetchall()
-	return render_template("warehouse.html", page_title="Dukes Locations", page_function="Locations", locations = location_result)
+    search_query = f"SELECT * FROM location"
+
+    cursor.execute(search_query)
+    connection.commit()
+
+    location_result = cursor.fetchall()
+    return render_template("warehouse.html",
+                           page_title="Dukes Locations",
+                           page_function="Locations",
+                           locations=location_result)
+
 
 @app.route('/new-location')
 def newLocation():
     return render_template('newwarehouse.html',
                            page_title="New Location",
                            page_function="Add Location")
+
+
 @app.route('/create-location', methods=("GET", "POST"))
 def createLocation():
     db = connect_db()
@@ -316,10 +324,54 @@ def createLocation():
 
     insert_query = """INSERT INTO location (location_key, location_name,location_address, location_number) VALUES (%s,%s,%s,%s)"""
 
-    record_to_insert = (location_key, location_name,location_address, location_number)
+    record_to_insert = (location_key, location_name, location_address,
+                        location_number)
     cursor.execute(insert_query, record_to_insert)
     db.commit()
 
     flash('Location created sucessfully', 'success')
     return redirect('/warehouse')
 
+
+@app.route('/update-location/<location_key>')
+def updateLocation(location_key):
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    location_query = f"SELECT * from location WHERE location_key='{location_key}'"
+
+    cursor.execute(location_query)
+    connection.commit()
+
+    location_result = cursor.fetchall()
+
+    return render_template('updatewarehouse.html',
+                           page_title="Update Location",
+                           page_function="Update location",
+                           location=location_result)
+
+@app.route('/update-location-<location_id>', methods=("GET", "POST"))
+def updateSingleLocation(location_id):
+    db = connect_db()
+    cursor = db.cursor()
+
+    location_name = request.form.get('locationName'),
+    location_address = request.form.get('locationAddress'),
+    location_number = request.form.get('locationContct'),
+
+    update_location_name_query = """UPDATE location SET location_name = %s WHERE location_id = %s"""
+    update_location_address_query = """UPDATE location SET location_address = %s WHERE location_id = %s"""
+    update_location_number_query = """UPDATE product SET location_number = %s WHERE location_id = %s"""
+
+    cursor.execute(update_location_name_query, (location_name, location_id))
+    cursor.execute(update_location_address_query,
+                   (location_address, location_id))
+    cursor.execute(update_location_number_query,
+                   (location_number, location_id))
+    db.commit()
+
+    flash('Location updated sucessfully', 'success')
+    return redirect('/warehouse')
+
+
+app.run(host='0.0.0.0', port=81)

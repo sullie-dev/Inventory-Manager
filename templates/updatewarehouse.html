@@ -2,23 +2,23 @@
 {% block content %}
 <div class="container">
 	<h1 class="py-2">{{page_function}}</h1>
-	<form class="py-2 productForm" method="post"action="/create-location">
-		<div class="container">
+	<form class="py-2 productForm" method="post"action="/create-product">
+			<div class="container">
 			 <div class="row">
 		    <div class="col">
 		      <div class="mb-3">
     <label for="locationName" class="form-label">Location</label>
-    <input type="text" class="form-control" id="locationName" name="locationName">
+    <input type="text" class="form-control" id="locationName" name="locationName" value={{ location[0][1] }}>
 					</div>
   <div class="mb-3">
     <label for="locationAddress" class="form-label">Address</label>
-    <input type="text" class="form-control" id="locationAddress" name="locationAddress">
+    <input type="text" class="form-control" id="locationAddress" name="locationAddress" value={{ location[0][2] }}>
   </div>
 		    </div>
 		    <div class="col">
 		      <div class="mb-3">
     <label for="locationContct" class="form-label">Contact number</label>
-    <input type="tel" class="form-control" id="locationContct" name="locationContct">
+    <input type="tel" class="form-control" id="locationContct" name="locationContct" value={{ location[0][3] }}>
 					</div>
 		    </div>
 		  </div>
@@ -26,7 +26,6 @@
 	<a href ="/"><button type="button" class="btn btn-danger">Back</button>
 	</a>
 		</div>
-
 </form>
 	
 </div>
