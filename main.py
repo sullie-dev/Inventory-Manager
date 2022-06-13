@@ -7,229 +7,267 @@ import string
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 
+
 def keyGenerator():
-	upper_string = string.ascii_uppercase
-	lower_string = string.ascii_lowercase
-	numerical = string.digits
-	
-	alphabet = upper_string + lower_string + numerical
-	random_character = random.sample(alphabet, 12)
-	key = "".join(random_character)
-	return key
+    upper_string = string.ascii_uppercase
+    lower_string = string.ascii_lowercase
+    numerical = string.digits
+
+    alphabet = upper_string + lower_string + numerical
+    random_character = random.sample(alphabet, 12)
+    key = "".join(random_character)
+    return key
+
 
 def connect_db():
-	"""Connects to the database"""
-	database_uri = os.environ['DATABASEURI']
-	db_connection = psycopg2.connect(database_uri, sslmode="require")
-	return db_connection
+    """Connects to the database"""
+    database_uri = os.environ['DATABASEURI']
+    db_connection = psycopg2.connect(database_uri, sslmode="require")
+    return db_connection
 
 
 @app.route('/')
 def index():
-	connection = connect_db()
-	cursor = connection.cursor()
-	
-	search_query = f"SELECT * FROM product"
-	
-	cursor.execute(search_query)
-	connection.commit()
-	
-	product_result = cursor.fetchall()
-	return render_template('index.html',page_title="Dukes Inventory", products = product_result)
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    search_query = f"SELECT * FROM product"
+
+    cursor.execute(search_query)
+    connection.commit()
+
+    product_result = cursor.fetchall()
+    return render_template('index.html',
+                           page_title="Dukes Inventory",
+                           products=product_result)
 
 
 @app.route('/shipments')
 def shipments():
 
-	connection = connect_db()
-	cursor = connection.cursor()
-	
-	search_query = f"SELECT * FROM shipment"
-	
-	cursor.execute(search_query)
-	connection.commit()
+    connection = connect_db()
+    cursor = connection.cursor()
 
-	shipments_result = cursor.fetchall()
-	print(shipments_result)
-	return render_template('shipments.html', page_title="Dukes Shipments", shipments=shipments_result)
+    search_query = f"SELECT * FROM shipment"
+
+    cursor.execute(search_query)
+    connection.commit()
+
+    shipments_result = cursor.fetchall()
+    print(shipments_result)
+    return render_template('shipments.html',
+                           page_title="Dukes Shipments",
+                           shipments=shipments_result)
+
 
 # Products
-	
+
+
 @app.route('/new-product')
 def newProduct():
-	return render_template('newproduct.html', page_title="New Product", page_function="Add product")
+    return render_template('newproduct.html',
+                           page_title="New Product",
+                           page_function="Add product")
 
 
 @app.route('/update-product/<product_key>')
 def updateProduct(product_key):
-	connection = connect_db()
-	cursor = connection.cursor()
-	
-	search_query = f"SELECT * from product WHERE product_key='{product_key}'"
-	
-	cursor.execute(search_query)
-	connection.commit()
-	
-	product_result = cursor.fetchall()
-	
-	return render_template('updateproduct.html', page_title="Update Product", page_function="Update product", product = product_result)
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    search_query = f"SELECT * from product WHERE product_key='{product_key}'"
+
+    cursor.execute(search_query)
+    connection.commit()
+
+    product_result = cursor.fetchall()
+
+    return render_template('updateproduct.html',
+                           page_title="Update Product",
+                           page_function="Update product",
+                           product=product_result)
 
 
 @app.route('/update-<product_key_update>', methods=("GET", "POST"))
 def updateProductKey(product_key_update):
-	db = connect_db()
-	cursor = db.cursor()
+    db = connect_db()
+    cursor = db.cursor()
 
-	product_name = request.form.get('productTitle')
-	product_qquantity = request.form.get('productQuantity')
-	product_sku = request.form.get('productSKU')
-	product_image = request.form.get('productMedia')
-	product_description = request.form.get('productDescription')
+    product_name = request.form.get('productTitle')
+    product_qquantity = request.form.get('productQuantity')
+    product_sku = request.form.get('productSKU')
+    product_image = request.form.get('productMedia')
+    product_description = request.form.get('productDescription')
 
-	update_product_name_query = """UPDATE product SET product_name = %s WHERE product_key = %s"""
-	update_product_qquantity_query = """UPDATE product SET product_qquantity = %s WHERE product_key = %s"""
-	update_product_sku_query = """UPDATE product SET product_sku = %s WHERE product_key = %s"""
-	update_product_image_query = """UPDATE product SET product_image = %s WHERE product_key = %s"""
-	update_product_description_query = """UPDATE product SET product_description = %s WHERE product_key = %s"""
-	
-	cursor.execute(update_product_name_query, (product_name, product_key_update))
-	cursor.execute(update_product_qquantity_query, (product_qquantity, product_key_update))
-	cursor.execute(update_product_sku_query, (product_sku, product_key_update))
-	cursor.execute(update_product_image_query, (product_image, product_key_update))
-	cursor.execute(update_product_description_query, (product_description, product_key_update))
-	
-	db.commit()
-	
-	flash('Product updated sucessfully','success')
-	return redirect('/')
+    update_product_name_query = """UPDATE product SET product_name = %s WHERE product_key = %s"""
+    update_product_qquantity_query = """UPDATE product SET product_qquantity = %s WHERE product_key = %s"""
+    update_product_sku_query = """UPDATE product SET product_sku = %s WHERE product_key = %s"""
+    update_product_image_query = """UPDATE product SET product_image = %s WHERE product_key = %s"""
+    update_product_description_query = """UPDATE product SET product_description = %s WHERE product_key = %s"""
 
+    cursor.execute(update_product_name_query,
+                   (product_name, product_key_update))
+    cursor.execute(update_product_qquantity_query,
+                   (product_qquantity, product_key_update))
+    cursor.execute(update_product_sku_query, (product_sku, product_key_update))
+    cursor.execute(update_product_image_query,
+                   (product_image, product_key_update))
+    cursor.execute(update_product_description_query,
+                   (product_description, product_key_update))
+
+    db.commit()
+
+    flash('Product updated sucessfully', 'success')
+    return redirect('/')
 
 
 @app.route('/create-product', methods=("GET", "POST"))
 def createProdcut():
-	db = connect_db()
-	cursor = db.cursor()
-	
-	product_key = keyGenerator(),
-	product_name = request.form.get('productTitle'),
-	product_qquantity = request.form.get('productQuantity'),
-	product_sku = request.form.get('productSKU'),
-	product_image = request.form.get('productMedia'),
-	product_description = request.form.get('productDescription')
+    db = connect_db()
+    cursor = db.cursor()
 
-	insert_query = """INSERT INTO product (product_key, product_name,product_qquantity,product_sku, product_image, product_description) VALUES (%s,%s,%s,%s,%s,%s)"""
+    product_key = keyGenerator(),
+    product_name = request.form.get('productTitle'),
+    product_qquantity = request.form.get('productQuantity'),
+    product_sku = request.form.get('productSKU'),
+    product_image = request.form.get('productMedia'),
+    product_description = request.form.get('productDescription')
 
-	record_to_insert = (product_key, product_name,product_qquantity,product_sku, product_image, product_description)
-	cursor.execute(insert_query, record_to_insert)
-	db.commit()
+    insert_query = """INSERT INTO product (product_key, product_name,product_qquantity,product_sku, product_image, product_description) VALUES (%s,%s,%s,%s,%s,%s)"""
 
-	flash('Product created sucessfully','success')
-	return redirect('/')
+    record_to_insert = (product_key, product_name, product_qquantity,
+                        product_sku, product_image, product_description)
+    cursor.execute(insert_query, record_to_insert)
+    db.commit()
+
+    flash('Product created sucessfully', 'success')
+    return redirect('/')
 
 
 @app.route('/delete-<product_key>', methods=("GET", "POST"))
 def deleteProduct(product_key):
-	
-		connection = connect_db()
-		cursor = connection.cursor()
-		delete_query = f""" DELETE from product WHERE product_key='{product_key}'"""
-		cursor.execute(delete_query)
-	
-		connection.commit()
 
-		flash('Product created deleted','success')
-		return redirect('/')
+    connection = connect_db()
+    cursor = connection.cursor()
+    delete_query = f""" DELETE from product WHERE product_key='{product_key}'"""
+    cursor.execute(delete_query)
 
-	# Shipments
-		
+    connection.commit()
+
+    flash('Product created deleted', 'success')
+    return redirect('/')
+
+
+# Shipments
+
+
 @app.route('/new-shipment')
 def newShipment():
-	return render_template('newshipment.html', page_title="New Shipment", page_function="Add shipment")
+    return render_template('newshipment.html',
+                           page_title="New Shipment",
+                           page_function="Add shipment")
+
 
 @app.route('/create-shipment', methods=("GET", "POST"))
 def createShipment():
-		db = connect_db()
-		cursor = db.cursor()
-	
-		shipment_key = keyGenerator(),
-		shipment_name = request.form.get('shipmentTitle'),
-		shipment_tracking = request.form.get('shipmentTracking'),
-		shipment_delivery_date = request.form.get('shipmentDeliveryDate'),
-		shipment_status = bool(request.form.get('shipmentStatus')),
-		shipment_description = request.form.get('shipmentDescription')
-	
-		insert_query = """INSERT INTO shipment (shipment_key, shipment_name,shipment_tracking,shipment_delivery_date, shipment_status, shipment_description) VALUES (%s,%s,%s,%s,%s,%s)"""
-	
-		record_to_insert = (shipment_key, shipment_name,shipment_tracking,shipment_delivery_date, shipment_status, shipment_description)
-		
-		cursor.execute(insert_query, record_to_insert)
-		db.commit()
-	
-		flash('Shipment created sucessfully','success')
-		return redirect('/shipments')
+    db = connect_db()
+    cursor = db.cursor()
 
+    shipment_key = keyGenerator(),
+    shipment_name = request.form.get('shipmentTitle'),
+    shipment_tracking = request.form.get('shipmentTracking'),
+    shipment_delivery_date = request.form.get('shipmentDeliveryDate'),
+    shipment_status = bool(request.form.get('shipmentStatus')),
+    shipment_description = request.form.get('shipmentDescription')
+
+    insert_query = """INSERT INTO shipment (shipment_key, shipment_name,shipment_tracking,shipment_delivery_date, shipment_status, shipment_description) VALUES (%s,%s,%s,%s,%s,%s)"""
+
+    record_to_insert = (shipment_key, shipment_name, shipment_tracking,
+                        shipment_delivery_date, shipment_status,
+                        shipment_description)
+
+    cursor.execute(insert_query, record_to_insert)
+    db.commit()
+
+    flash('Shipment created sucessfully', 'success')
+    return redirect('/shipments')
 
 
 @app.route('/update-shipment/<shipment_key>')
 def updateShipment(shipment_key):
-	connection = connect_db()
-	cursor = connection.cursor()
-	
-	search_query = f"SELECT * from shipment WHERE shipment_key='{shipment_key}'"
-	
-	cursor.execute(search_query)
-	connection.commit()
-	
-	shipment_result = cursor.fetchall()
+    connection = connect_db()
+    cursor = connection.cursor()
 
-	print(shipment_result)
-	
-	return render_template('updateshipments.html', page_title="Update Shipment", page_function="Update Shipment", shipment = shipment_result)
+    search_query = f"SELECT * from shipment WHERE shipment_key='{shipment_key}'"
+
+    cursor.execute(search_query)
+    connection.commit()
+
+    shipment_result = cursor.fetchall()
+
+    print(shipment_result)
+
+    return render_template('updateshipments.html',
+                           page_title="Update Shipment",
+                           page_function="Update Shipment",
+                           shipment=shipment_result)
 
 
 @app.route('/update-shipment/<shipment_key>', methods=("GET", "POST"))
 def updateSingleShipment(shipment_key):
-	db = connect_db()
-	cursor = db.cursor()
+    db = connect_db()
+    cursor = db.cursor()
 
-	shipment_name = request.form.get('shipmentTitle'),
-	shipment_tracking = request.form.get('shipmentTracking'),
-	shipment_delivery_date = request.form.get('shipmentDeliveryDate'),
-	shipment_status = bool(request.form.get('shipmentStatus')),
-	shipment_description = request.form.get('shipmentDescription')
+    shipment_name = request.form.get('shipmentTitle'),
+    shipment_tracking = request.form.get('shipmentTracking'),
+    shipment_delivery_date = request.form.get('shipmentDeliveryDate'),
+    shipment_status = bool(request.form.get('shipmentStatus')),
+    shipment_description = request.form.get('shipmentDescription')
 
-	update_shipment_name_query = """UPDATE shipment SET shipment_name = %s WHERE shipment_key = %s"""
-	update_shipment_tracking_query = """UPDATE shipment SET shipment_tracking = %s WHERE shipment_key = %s"""
-	shipment_delivery_date_query = """UPDATE shipment SET shipment_delivery_date = %s WHERE shipment_key = %s"""
-	shipment_status_query = """UPDATE shipment SET shipment_status = %s WHERE shipment_key = %s"""
-	update_shipment_description_query = """UPDATE shipment SET shipment_description = %s WHERE shipment_key = %s"""
-	
-	cursor.execute(update_shipment_name_query, (shipment_name, shipment_key))
-	cursor.execute(update_shipment_tracking_query, (shipment_tracking, shipment_key))
-	cursor.execute(shipment_delivery_date_query, (shipment_delivery_date, shipment_key))
-	
-	cursor.execute(shipment_status_query, (shipment_status, shipment_key))
-	cursor.execute(update_shipment_description_query, (shipment_description, shipment_key))
-	
-	db.commit()
-	
-	flash('Shipment updated sucessfully','success')
-	return redirect('/shipments')
+    update_shipment_name_query = """UPDATE shipment SET shipment_name = %s WHERE shipment_key = %s"""
+    update_shipment_tracking_query = """UPDATE shipment SET shipment_tracking = %s WHERE shipment_key = %s"""
+    shipment_delivery_date_query = """UPDATE shipment SET shipment_delivery_date = %s WHERE shipment_key = %s"""
+    shipment_status_query = """UPDATE shipment SET shipment_status = %s WHERE shipment_key = %s"""
+    update_shipment_description_query = """UPDATE shipment SET shipment_description = %s WHERE shipment_key = %s"""
+
+    cursor.execute(update_shipment_name_query, (shipment_name, shipment_key))
+    cursor.execute(update_shipment_tracking_query,
+                   (shipment_tracking, shipment_key))
+    cursor.execute(shipment_delivery_date_query,
+                   (shipment_delivery_date, shipment_key))
+
+    cursor.execute(shipment_status_query, (shipment_status, shipment_key))
+    cursor.execute(update_shipment_description_query,
+                   (shipment_description, shipment_key))
+
+    db.commit()
+
+    flash('Shipment updated sucessfully', 'success')
+    return redirect('/shipments')
+
 
 @app.route('/delete-shipment-<shipment_key>', methods=("GET", "POST"))
 def deleteShipment(shipment_key):
-	
-		connection = connect_db()
-		cursor = connection.cursor()
-		# delete_query = """DELETE product
-  #   WHERE product_key = %s"""
-		delete_query = f""" DELETE from shipment WHERE shipment_key='{shipment_key}'"""
-		cursor.execute(delete_query)
-	
-		connection.commit()
 
-		flash('Shipment deleted','success')
-		return redirect('/shipments')
+    connection = connect_db()
+    cursor = connection.cursor()
+    # delete_query = """DELETE product
+    #   WHERE product_key = %s"""
+    delete_query = f""" DELETE from shipment WHERE shipment_key='{shipment_key}'"""
+    cursor.execute(delete_query)
+
+    connection.commit()
+
+    flash('Shipment deleted', 'success')
+    return redirect('/shipments')
+
+
+
+
+#Merchant routes
+@app.route('/warehouse')
+def warehouse():
+    return render_template("warehouse.html", page_title="Dukes Locations", page_function="Locations")
 
 
 app.run(host='0.0.0.0', port=81)
