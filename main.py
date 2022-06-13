@@ -132,8 +132,6 @@ def deleteProduct(product_key):
 	
 		connection = connect_db()
 		cursor = connection.cursor()
-		# delete_query = """DELETE product
-  #   WHERE product_key = %s"""
 		delete_query = f""" DELETE from product WHERE product_key='{product_key}'"""
 		cursor.execute(delete_query)
 	
@@ -171,11 +169,54 @@ def createShipment():
 		return redirect('/shipments')
 
 
-@app.route('/update-shipment')
-def updateShipment():
-	return render_template('updateshipments.html', page_title="Update Shipment", page_function="Update shipment")
 
-@app.route('/delete-<shipment_key>', methods=("GET", "POST"))
+@app.route('/update-shipment/<shipment_key>')
+def updateShipment(shipment_key):
+	connection = connect_db()
+	cursor = connection.cursor()
+	
+	search_query = f"SELECT * from shipment WHERE shipment_key='{shipment_key}'"
+	
+	cursor.execute(search_query)
+	connection.commit()
+	
+	shipment_result = cursor.fetchall()
+
+	print(shipment_result)
+	
+	return render_template('updateshipments.html', page_title="Update Shipment", page_function="Update Shipment", shipment = shipment_result)
+
+
+@app.route('/update-shipment/<shipment_key>', methods=("GET", "POST"))
+def updateSingleShipment(shipment_key):
+	db = connect_db()
+	cursor = db.cursor()
+
+	shipment_name = request.form.get('shipmentTitle'),
+	shipment_tracking = request.form.get('shipmentTracking'),
+	shipment_delivery_date = request.form.get('shipmentDeliveryDate'),
+	shipment_status = bool(request.form.get('shipmentStatus')),
+	shipment_description = request.form.get('shipmentDescription')
+
+	update_shipment_name_query = """UPDATE shipment SET shipment_name = %s WHERE shipment_key = %s"""
+	update_shipment_tracking_query = """UPDATE shipment SET shipment_tracking = %s WHERE shipment_key = %s"""
+	shipment_delivery_date_query = """UPDATE shipment SET shipment_delivery_date = %s WHERE shipment_key = %s"""
+	shipment_status_query = """UPDATE shipment SET shipment_status = %s WHERE shipment_key = %s"""
+	update_shipment_description_query = """UPDATE shipment SET shipment_description = %s WHERE shipment_key = %s"""
+	
+	cursor.execute(update_shipment_name_query, (shipment_name, shipment_key))
+	cursor.execute(update_shipment_tracking_query, (shipment_tracking, shipment_key))
+	cursor.execute(shipment_delivery_date_query, (shipment_delivery_date, shipment_key))
+	
+	cursor.execute(shipment_status_query, (shipment_status, shipment_key))
+	cursor.execute(update_shipment_description_query, (shipment_description, shipment_key))
+	
+	db.commit()
+	
+	flash('Shipment updated sucessfully','success')
+	return redirect('/shipments')
+
+@app.route('/delete-shipment-<shipment_key>', methods=("GET", "POST"))
 def deleteShipment(shipment_key):
 	
 		connection = connect_db()
